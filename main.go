@@ -32,11 +32,13 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewJwtService()
 
+	// setup handler
 	userHandler := handler.NewUserHandler(userService, authService)
 
 	api := r.Group("/api")
 	{
 		api.POST("/register", userHandler.Register)
+		api.POST("/login", userHandler.Login)
 	}
 
 	r.Run()
