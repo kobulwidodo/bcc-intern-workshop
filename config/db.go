@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"workshop-be/tweet"
 	"workshop-be/user"
 
 	"gorm.io/driver/mysql"
@@ -24,7 +25,7 @@ func InitDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := DB.AutoMigrate(&user.User{}); err != nil {
+	if err := DB.AutoMigrate(&user.User{}, &tweet.Tweet{}); err != nil {
 		return nil, err
 	}
 

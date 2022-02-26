@@ -9,6 +9,7 @@ import (
 type Service interface {
 	RegisterUser(input RegisterInput) (User, error)
 	LoginUser(input LoginInput) (User, error)
+	GetById(userId uint) (User, error)
 }
 
 type service struct {
@@ -54,6 +55,20 @@ func (s *service) LoginUser(input LoginInput) (User, error) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
 	if err != nil {
 		return user, errors.New("password tidak sesuai")
+	}
+
+	return user, nil
+}
+
+func (s *service) GetById(userid uint) (User, error) {
+	var user User
+	user, err := s.repository.FindByUserId(userid)
+	if err != nil {
+		return user, err
+	}
+
+	if user.ID == 0 {
+		return user, errors.New("user id tidak tersedia")
 	}
 
 	return user, nil
