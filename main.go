@@ -53,6 +53,7 @@ func main() {
 		api.GET("/tweet/user/:id", tweetHandler.GetTweetsByUserId)
 		api.GET("/tweet", tweetHandler.GetAllTweets)
 		api.GET("/tweet/:id", tweetHandler.GetTweetById)
+		api.DELETE("/tweet/:id", authMiddleware(authService, userService), tweetHandler.DeleteTweet)
 	}
 
 	r.Run()

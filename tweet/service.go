@@ -8,6 +8,7 @@ type Service interface {
 	GetTweetsByUserId(userId uint) ([]Tweet, error)
 	GetTweets() ([]Tweet, error)
 	GetTweetById(id uint) (Tweet, error)
+	DeleteTweet(input InputDeleteTweet) error
 }
 
 type service struct {
@@ -84,4 +85,27 @@ func (s *service) GetTweetById(id uint) (Tweet, error) {
 	}
 
 	return tweet, nil
+}
+
+func (s *service) DeleteTweet(input InputDeleteTweet) error {
+	var tweet Tweet
+	tweet, err := s.repository.GetById(input.TweetId)
+
+	if err != nil {
+		return err
+	}
+
+	if tweet.ID == 0 {
+		return errors.New("tweet tidak ditemukan")
+	}
+
+	if tweet.UserID != input.UserId {
+		return errors.New("tidak memiliki akses")
+	}
+
+	if err := s.repository.Delete(tweet); err != nil {
+		return err
+	}
+
+	return nil
 }

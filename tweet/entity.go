@@ -24,6 +24,11 @@ type InputUpdateTweet struct {
 	TweetID uint
 }
 
+type InputDeleteTweet struct {
+	TweetId uint
+	UserId  uint
+}
+
 type InputUriTweet struct {
 	Id int `uri:"id" binding:"required"`
 }

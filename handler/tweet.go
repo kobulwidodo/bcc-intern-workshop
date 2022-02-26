@@ -120,3 +120,27 @@ func (h *tweetHandler) GetTweetById(c *gin.Context) {
 	response := helper.ApiResponse("Berhasil mendapatkan data", http.StatusOK, "success", tweet.TweetFormatter(getTweet))
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *tweetHandler) DeleteTweet(c *gin.Context) {
+	var inputUri tweet.InputUriTweet
+	if err := c.ShouldBindUri(&inputUri); err != nil {
+		response := helper.ApiResponse("Gagal mendapatkan tweet id", http.StatusUnprocessableEntity, "error", helper.FormatBindError(err))
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	userLoggedin := c.MustGet("userLoggedin").(user.User)
+
+	var input tweet.InputDeleteTweet
+	input.TweetId = uint(inputUri.Id)
+	input.UserId = userLoggedin.ID
+
+	if err := h.tweetService.DeleteTweet(input); err != nil {
+		response := helper.ApiResponse(err.Error(), http.StatusInternalServerError, "error", nil)
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	response := helper.ApiResponse("Berhasil menghapus tweet", http.StatusOK, "success", nil)
+	c.JSON(http.StatusOK, response)
+}

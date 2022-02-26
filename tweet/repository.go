@@ -8,6 +8,7 @@ type Repository interface {
 	GetById(id uint) (Tweet, error)
 	GetByUserId(userId uint) ([]Tweet, error)
 	Get() ([]Tweet, error)
+	Delete(tweet Tweet) error
 }
 
 type repository struct {
@@ -59,4 +60,12 @@ func (r *repository) Get() ([]Tweet, error) {
 	}
 
 	return tweets, nil
+}
+
+func (r *repository) Delete(tweet Tweet) error {
+	if err := r.db.Delete(&tweet).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
